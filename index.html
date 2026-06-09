@@ -1,0 +1,51 @@
+<body>
+    <button id="fullscreenBtn" onclick="toggleFullscreen()" class="fs-btn">⛶ Fullscreen</button>
+
+    <div class="container" id="lobbyContainer">
+        <h2 style="margin-top: 0; color: #2c3e50;">Masuk Kelas</h2>
+        <input type="text" id="playerName" placeholder="Tulis Nama Kamu" style="margin-bottom: 15px; width: 90%; max-width: 300px; padding: 12px; font-size: 1.2rem; text-align: center; border: 3px solid #dfe6e9; border-radius: 12px; outline: none;">
+        <input type="text" id="roomCode" placeholder="Kode Ruangan" style="margin-bottom: 25px; width: 90%; max-width: 300px; padding: 12px; font-size: 1.2rem; text-align: center; border: 3px solid #dfe6e9; border-radius: 12px; outline: none; text-transform: uppercase;">
+        
+        <button class="enter-btn" style="width: 100%; padding: 15px; font-size: 1.2rem; border-radius: 10px; background-color: #3498db; color: white; border: none; font-weight: bold; cursor: pointer;" onclick="joinRoom()">Gabung Kelas</button>
+        <div id="lobbyStatus" style="margin-top: 15px; color: #e74c3c; font-weight: bold;"></div>
+    </div>
+
+    <div class="container" id="gameContainer" style="display: none;">
+        
+        <div class="settings">
+            <b>Rentang:</b> 
+            <input type="number" id="minRange" value="-10" style="width: 70px; font-size: 1rem; border: 1px solid #ccc; padding: 5px;"> s/d 
+            <input type="number" id="maxRange" value="10" style="width: 70px; font-size: 1rem; border: 1px solid #ccc; padding: 5px;"> <br>
+            <div style="margin-top: 10px;">
+                <b>Waktu:</b> <input type="number" id="timeSetting" value="5" style="width: 50px; font-size: 1rem; border: 1px solid #ccc; padding: 5px;"> detik
+            </div>
+        </div>
+
+        <div class="timer">Sisa Waktu: <span id="timeLeft">0</span>s</div>
+        <div class="question" id="questionText">Siap?</div>
+        
+        <input type="text" id="answerInput" placeholder="Jawab..." autocomplete="off" inputmode="none" onkeydown="handleEnter(event)">
+        
+        <div id="statusText" class="status-text"></div>
+        <div id="calculator" class="calculator">
+            <button onclick="appendNum('1')">1</button>
+            <button onclick="appendNum('2')">2</button>
+            <button onclick="appendNum('3')">3</button>
+            <button onclick="appendNum('4')">4</button>
+            <button onclick="appendNum('5')">5</button>
+            <button onclick="appendNum('6')">6</button>
+            <button onclick="appendNum('7')">7</button>
+            <button onclick="appendNum('8')">8</button>
+            <button onclick="appendNum('9')">9</button>
+            <button onclick="appendNum('-')">-</button>
+            <button onclick="appendNum('0')">0</button>
+            <button onclick="deleteNum()" class="del-btn">Delete</button>
+            <button id="mainBtn" onclick="startGame()" class="enter-btn" style="background-color: #3498db; border-color: #3498db;">Start</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>

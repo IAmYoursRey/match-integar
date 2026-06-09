@@ -1,0 +1,90 @@
+let currentRoomCode = "";
+
+// Fungsi membuat kode acak 4 digit angka (Contoh: 7412)
+function generateRandomCode() {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
+// Fungsi membuat pangkalan data ruangan baru di Firebase
+function createRoom() {
+    currentRoomCode = generateRandomCode();
+    
+    // Set data awal ruangan di database internet Firebase
+    database.ref('ruangan/' + currentRoomCode).set({
+        status_game: "tunggu", // status 'tunggu' membuat murid tertahan di lobby
+        soal_aktif: ""
+    }).then(() => {
+        // Ganti tampilan tombol menjadi dashboard pantauan guru
+        document.getElementById('setupSection').style.display = 'none';
+        document.getElementById('roomSection').style.display = 'block';
+        document.getElementById('displayRoomCode').innerText = currentRoomCode;
+        
+        // Mulai mendengarkan server jika ada murid yang masuk atau menjawab
+        listenToPlayers();
+    }).catch((error) => {
+        alert("Gagal membuat ruangan di server: " + error.message);
+    });
+}
+
+// Fungsi memantau pergerakan murid secara Real-Time (Tanpa Refresh)
+function listenToPlayers() {
+    database.ref('ruangan/' + currentRoomCode + '/pemain').on('value', (snapshot) => {
+        const playerListContainer = document.getElementById('playerList');
+        const playerCountSpan = document.getElementById('playerCount');
+        playerListContainer.innerHTML = ""; // Bersihkan baris tabel lama
+        
+        if (snapshot.exists()) {
+            const players = snapshot.val();
+            let count = 0;
+            
+            // Membaca satu per satu nama murid yang masuk ke database
+            for (let name in players) {
+                count++;
+                const playerData = players[name];
+                
+                let statusText = "Menunggu Aba-aba...";
+                let rowStyle = "";
+                
+                // Pewarnaan dinamis baris tabel guru berdasarkan respon murid
+                if (playerData.status_jawaban === "Benar") {
+                    statusText = "Benar! ✔";
+                    rowStyle = "background-color: #f0fff4; color: #27ae60; font-weight: bold;";
+                } else if (playerData.status_jawaban === "Salah") {
+                    statusText = `Salah (Jawab: ${playerData.jawaban_murid})`;
+                    rowStyle = "background-color: #fff5f5; color: #c0392b; font-weight: bold;";
+                } else if (playerData.status_jawaban === "Waktu Habis") {
+                    statusText = "Waktu Habis! ⏰";
+                    rowStyle = "background-color: #fff5f5; color: #c0392b; font-weight: bold;";
+                } else if (playerData.status_jawaban === "Sedang Mengerjakan") {
+                    statusText = "Sedang Berpikir... 📝";
+                    rowStyle = "color: #3498db;";
+                }
+                
+                const row = `
+                    <tr style="border-bottom: 1px solid #eee; ${rowStyle}">
+                        <td style="padding: 12px;">${name}</td>
+                        <td style="padding: 12px; text-align: center;">${statusText}</td>
+                    </tr>
+                `;
+                playerListContainer.innerHTML += row;
+            }
+            playerCountSpan.innerText = count;
+        } else {
+            playerCountSpan.innerText = "0";
+            playerListContainer.innerHTML = `<tr><td colspan="2" style="text-align:center; padding:20px; color:#95a5a6;">Belum ada murid yang bergabung...</td></tr>`;
+        }
+    });
+}
+
+// Fungsi saat Guru menekan tombol "Mulai Ujian Semua Murid"
+function startQuiz() {
+    database.ref('ruangan/' + currentRoomCode).update({
+        status_game: "mulai" // Berubah jadi mulai, memicu layar HP murid berganti ke soal
+    }).then(() => {
+        const startBtn = document.getElementById('startQuizBtn');
+        startBtn.innerText = "Ujian Sedang Berjalan...";
+        startBtn.disabled = true;
+        startBtn.style.backgroundColor = "#7f8c8d";
+        startBtn.style.borderColor = "#7f8c8d";
+    });
+}

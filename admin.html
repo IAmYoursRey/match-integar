@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Guru - Kuis Bilangan Bulat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" style="min-width: 320px; max-width: 500px;">
+        <h2 style="color: #2c3e50; margin-top: 0;">Panel Guru / Admin</h2>
+        
+        <div id="setupSection">
+            <button class="enter-btn" onclick="createRoom()" style="background-color: #3498db; border-color: #3498db; width: 100%; padding: 15px; font-size: 1.2rem;">Buat Ruangan Baru</button>
+        </div>
+
+        <div id="roomSection" style="display: none;">
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee;">
+                <span style="font-size: 1.1rem; color: #7f8c8d;">KODE RUANGAN:</span>
+                <h1 id="displayRoomCode" style="font-size: 3rem; margin: 5px 0; color: #2c3e50; letter-spacing: 5px;">-</h1>
+                <p style="margin: 0; color: #95a5a6; font-size: 0.9rem;">Bagikan kode ini ke murid Anda</p>
+            </div>
+
+            <button id="startQuizBtn" class="enter-btn" onclick="startQuiz()" style="background-color: #2ecc71; border-color: #2ecc71; width: 100%; padding: 15px; font-size: 1.2rem; margin-bottom: 25px;">Mulai Ujian Semua Murid</button>
+
+            <h3 style="text-align: left; color: #34495e; margin-bottom: 10px;">Daftar Murid & Hasil (<span id="playerCount">0</span>)</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem;">
+                    <thead>
+                        <tr style="background-color: #f1f2f6; border-bottom: 2px solid #ddd;">
+                            <th style="padding: 10px;">Nama Murid</th>
+                            <th style="padding: 10px; text-align: center;">Status / Jawaban</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playerList">
+                        <tr>
+                            <td colspan="2" style="text-align:center; padding:20px; color:#95a5a6;">Belum ada murid yang bergabung...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

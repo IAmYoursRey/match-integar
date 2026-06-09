@@ -1,0 +1,195 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+    margin: 0;
+    background-color: #f0f2f5;
+    padding: 20px; 
+}
+
+.container {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    text-align: center;
+    min-width: 280px; 
+    box-sizing: border-box;
+    max-width: 95vw; 
+    width: fit-content; 
+    transition: all 0.3s ease; 
+}
+
+.settings {
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    line-height: 1.8;
+}
+
+.timer {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 10px;
+}
+
+.question {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    margin: 10px 0;
+    font-weight: 800;
+    color: #2c3e50;
+    white-space: nowrap;
+}
+
+input[type="text"] {
+    width: 90%;
+    max-width: 300px;
+    padding: 12px;
+    font-size: 1.8rem;
+    text-align: center;
+    border: 3px solid #dfe6e9;
+    border-radius: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.correct { border-color: #2ecc71 !important; background-color: #f0fff4; color: #27ae60; }
+.wrong { border-color: #e74c3c !important; background-color: #fff5f5; color: #c0392b; }
+
+.btn {
+    margin-top: 25px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    display: none;
+    width: 100%;
+}
+
+.btn:hover { background-color: #2980b9; transform: translateY(-2px); }
+
+.status-text { margin-top: 15px; font-weight: bold; font-size: 1.1rem; }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.calculator button {
+    padding: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 2px solid #dfe6e9;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: #2c3e50;
+}
+
+.calculator button:hover { 
+    background-color: #e0e0e0; 
+}
+
+.calculator .del-btn { 
+    background-color: #f39c12; 
+    color: white; 
+    border-color: #f39c12; 
+}
+
+.calculator .enter-btn { 
+    grid-column: span 3; 
+    background-color: #2ecc71; 
+    color: white; 
+    border-color: #2ecc71; 
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 3rem; 
+        min-width: 450px;
+    }
+    .settings {
+        font-size: 1.2rem; 
+        margin-bottom: 35px;
+    }
+    .settings input {
+        font-size: 1.2rem !important; 
+        width: 80px !important;
+    }
+    .question {
+        margin: 40px 0; 
+        font-size: 4rem;
+    }
+    input[type="text"] {
+        font-size: 2.5rem;
+        padding: 15px;
+        max-width: 400px;
+    }
+    .calculator button {
+        padding: 20px;
+        font-size: 1.6rem; 
+    }
+    .enter-btn {
+        font-size: 1.5rem !important; 
+        padding: 18px !important;
+    }
+    .timer {
+        font-size: 1.8rem;
+    }
+    .status-text {
+        font-size: 1.5rem;
+    }
+}
+
+.fs-btn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    padding: 10px 15px;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background 0.3s;
+    z-index: 1000;
+}
+
+.fs-btn:hover {
+    background-color: #1a252f;
+}
+
+@media (min-width: 768px) {
+    .fs-btn {
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+}
