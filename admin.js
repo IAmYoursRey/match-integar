@@ -18,8 +18,8 @@ function createRoom() {
         document.getElementById('setupSection').style.display = 'none';
         document.getElementById('roomSection').style.display = 'block';
         document.getElementById('displayRoomCode').innerText = currentRoomCode;
-        
-        // Mulai mendengarkan server jika ada murid yang masuk atau menjawab
+        // Simpan sesi ruangan guru agar aman dari refresh
+        sessionStorage.setItem('adminRoomCode', currentRoomCode);
         listenToPlayers();
     }).catch((error) => {
         alert("Gagal membuat ruangan di server: " + error.message);
@@ -119,3 +119,53 @@ function startQuiz() {
         startBtn.style.borderColor = "#7f8c8d";
     });
 }
+
+// Fungsi untuk menghapus ruangan dan mengeluarkan semua murid
+function deleteRoom() {
+    if (confirm("Apakah Anda yakin ingin menghapus ruangan ini? Semua murid akan dikeluarkan secara otomatis.")) {
+        // Hapus data ruangan dari server Firebase
+        database.ref('ruangan/' + currentRoomCode).remove().then(() => {
+            // Hapus memori di laptop guru
+            sessionStorage.removeItem('adminRoomCode');
+            
+            // Kembalikan tampilan ke menu awal
+            document.getElementById('setupSection').style.display = 'block';
+            document.getElementById('roomSection').style.display = 'none';
+            currentRoomCode = "";
+            
+            // Bersihkan tabel dan tombol
+            document.getElementById('playerList').innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada murid yang bergabung...</td></tr>`;
+            document.getElementById('playerCount').innerText = "0";
+            
+            const startBtn = document.getElementById('startQuizBtn');
+            startBtn.innerText = "Mulai Ujian";
+            startBtn.disabled = false;
+            startBtn.style.backgroundColor = "#2ecc71";
+            startBtn.style.borderColor = "#2ecc71";
+        });
+    }
+}
+
+// Fitur Auto-Reconnect Guru jika Web Di-refresh
+window.onload = () => {
+    const savedRoom = sessionStorage.getItem('adminRoomCode');
+    if (savedRoom) {
+        currentRoomCode = savedRoom;
+        document.getElementById('setupSection').style.display = 'none';
+        document.getElementById('roomSection').style.display = 'block';
+        document.getElementById('displayRoomCode').innerText = currentRoomCode;
+        
+        listenToPlayers();
+        
+        // Cek apakah ujian sudah dimulai sebelumnya
+        database.ref('ruangan/' + currentRoomCode + '/status_game').once('value', (snapshot) => {
+            if (snapshot.val() === "mulai") {
+                const startBtn = document.getElementById('startQuizBtn');
+                startBtn.innerText = "Ujian Sedang Berjalan...";
+                startBtn.disabled = true;
+                startBtn.style.backgroundColor = "#7f8c8d";
+                startBtn.style.borderColor = "#7f8c8d";
+            }
+        });
+    }
+};

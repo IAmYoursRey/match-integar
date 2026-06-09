@@ -59,14 +59,21 @@ function joinRoom() {
 }
 
 // Mendengarkan aba-aba mulai dari server secara real-time
+// Mendengarkan aba-aba dari server secara real-time
 function listenForStartSignal() {
     database.ref('ruangan/' + currentRoomCode + '/status_game').on('value', (snapshot) => {
+        // Jika data hilang (ruangan dihapus oleh Guru)
+        if (!snapshot.exists()) {
+            sessionStorage.clear(); // Hapus memori murid
+            alert("Ruangan telah ditutup oleh Guru! Anda akan dikembalikan ke halaman utama.");
+            window.location.reload(); // Paksa muat ulang halaman ke layar masuk
+            return;
+        }
+
         if (snapshot.val() === "mulai") {
             // Sembunyikan kotak login, munculkan dashboard game utama
             document.getElementById('lobbyContainer').style.display = 'none';
             document.getElementById('gameContainer').style.display = 'block';
-            
-            // Otomatis picu soal pertama tanpa murid harus klik tombol start lagi
             startGame();
         }
     });
@@ -268,20 +275,26 @@ document.addEventListener('fullscreenchange', () => {
 window.onload = () => {
     const savedName = sessionStorage.getItem('playerName');
     const savedRoom = sessionStorage.getItem('roomCode');
+    
     if (savedName && savedRoom) {
-        playerName = savedName;
-        currentRoomCode = savedRoom;
-        
-        // Langsung tampilkan game dan sembunyikan lobby
-        document.getElementById('lobbyContainer').style.display = 'none';
-        document.getElementById('gameContainer').style.display = 'block';
-        
-        // Beritahu guru bahwa murid terhubung kembali
-        database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
-            status_jawaban: "Terkoneksi kembali..."
+        // Cek dulu apakah ruangannya masih ada di server sebelum masuk
+        database.ref('ruangan/' + savedRoom).once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                playerName = savedName;
+                currentRoomCode = savedRoom;
+                
+                document.getElementById('lobbyContainer').style.display = 'none';
+                document.getElementById('gameContainer').style.display = 'block';
+                
+                database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
+                    status_jawaban: "Terkoneksi kembali..."
+                });
+                
+                listenForStartSignal();
+            } else {
+                // Jika ruangannya ternyata sudah dihapus guru, bersihkan memori murid
+                sessionStorage.clear();
+            }
         });
-        
-        // Dengarkan status game lagi
-        listenForStartSignal();
     }
 };
