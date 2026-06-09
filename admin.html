@@ -3,46 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Guru - Kuis Bilangan Bulat</title>
+    <title>Panel - Bilangan Bulat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container admin-container">
-        <h2 style="color: #2c3e50; margin-top: 0;">Panel Guru / Admin</h2>
+        <h2 style="color: #2c3e50; margin-top: 0;">Dasbor</h2>
         
         <div id="setupSection">
-            <button class="enter-btn" onclick="createRoom()" style="background-color: #3498db; border-color: #3498db; width: 100%; padding: 15px; font-size: 1.2rem;">Buat Ruangan Baru</button>
+            <button class="admin-btn btn-primary" onclick="createRoom()" style="width: 100%; padding: 18px; font-size: 1.2rem;">✨ Buat Ruangan Baru</button>
         </div>
 
         <div id="roomSection" style="display: none;">
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee;">
-                <span style="font-size: 1.1rem; color: #7f8c8d;">KODE RUANGAN:</span>
-                <h1 id="displayRoomCode" style="font-size: 3rem; margin: 5px 0; color: #2c3e50; letter-spacing: 5px;">-</h1>
-                <p style="margin: 0; color: #95a5a6; font-size: 0.9rem;">Bagikan kode ini ke murid Anda</p>
+            <div class="settings-card" style="text-align: center; border: 2px dashed #bdc3c7; background: #fbfbfc;">
+                <span style="font-size: 1rem; color: #7f8c8d; font-weight: bold;">KODE RUANGAN:</span>
+                <h1 id="displayRoomCode" style="font-size: 3.5rem; margin: 10px 0 0 0; color: #2c3e50; letter-spacing: 8px;">-</h1>
             </div>
 
-            <button id="startQuizBtn" class="enter-btn" onclick="startQuiz()" style="background-color: #2ecc71; border-color: #2ecc71; width: 100%; padding: 15px; font-size: 1.2rem; margin-bottom: 25px;">Mulai Ujian Semua Murid</button>
-
-            <div style="display: flex; gap: 15px; margin-bottom: 25px;">
-                <button id="startQuizBtn" class="enter-btn" onclick="startQuiz()" style="flex: 1; background-color: #2ecc71; border-color: #2ecc71; padding: 15px; font-size: 1.1rem; margin-top: 0;">Mulai Ujian</button>
-                <button id="deleteRoomBtn" class="enter-btn" onclick="deleteRoom()" style="flex: 1; background-color: #e74c3c; border-color: #e74c3c; padding: 15px; font-size: 1.1rem; margin-top: 0;">Hapus Ruangan</button>
+            <div class="tab-container">
+                <button id="tab1Btn" onclick="switchTab(1)" class="tab-btn active">🎮 Kontrol</button>
+                <button id="tab2Btn" onclick="switchTab(2)" class="tab-btn">👥 Panel Individu</button>
             </div>
-            
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th style="text-align: left;">Nama Murid</th>
-                        <th>Pengaturan</th>
-                        <th>Skor</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="playerList">
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada murid yang bergabung...</td>
-                    </tr>
-                </tbody>
-            </table>
+
+            <div id="tab1">
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <button id="toggleQuizBtn" class="admin-btn btn-success" onclick="toggleQuiz()" style="flex: 1;">▶ Mulai</button>
+                    <button id="deleteRoomBtn" class="admin-btn btn-danger" onclick="deleteRoom()" style="flex: 1;">🗑️ Hapus Ruangan</button>
+                </div>
+                <button id="resetBtn" class="admin-btn btn-warning" onclick="resetScores()" style="width: 100%; margin-bottom: 25px;">🔄 Reset Semua Skor</button>
+
+                <div class="settings-card">
+                    <h3 style="margin:0 0 15px 0; color: #34495e; font-size:1.1rem; border-bottom: 2px solid #eee; padding-bottom: 10px;">📊 Live Scoreboard (<span id="playerCountScore">0</span>)</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left;">Nama</th>
+                                    <th>Pengaturan Aktif</th>
+                                    <th>Skor & Total</th>
+                                    <th>Status Saat Ini</th>
+                                </tr>
+                            </thead>
+                            <tbody id="playerListScore"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab2" style="display: none;">
+                
+                <div class="settings-card">
+                    <h4 style="margin-top:0; margin-bottom:5px; color:#2c3e50; font-size: 1rem;">⚙️ Paksa Aturan Global</h4>
+                    <p style="font-size:0.85rem; color:#7f8c8d; margin-top:0; margin-bottom: 15px;">(mengunci nilai)</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                        <div class="input-group">
+                            <label><input type="checkbox" id="gCheckMin" onchange="updateGlobalSettings()"> Min</label>
+                            <input type="number" id="gMin" value="-10" onchange="updateGlobalSettings()" class="admin-input">
+                        </div>
+                        <div class="input-group">
+                            <label><input type="checkbox" id="gCheckMax" onchange="updateGlobalSettings()"> Max</label>
+                            <input type="number" id="gMax" value="10" onchange="updateGlobalSettings()" class="admin-input">
+                        </div>
+                        <div class="input-group">
+                            <label><input type="checkbox" id="gCheckTime" onchange="updateGlobalSettings()"> Waktu (s)</label>
+                            <input type="number" id="gTime" value="5" onchange="updateGlobalSettings()" class="admin-input">
+                        </div>
+                        <div class="input-group">
+                            <label><input type="checkbox" id="gCheckSoal" onchange="updateGlobalSettings()"> Maks Soal</label>
+                            <input type="number" id="gMaxSoal" value="10" onchange="updateGlobalSettings()" class="admin-input">
+                        </div>
+                    </div>
+                    
+                    <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+                    
+                    <label style="font-weight: bold; color: #2980b9; display: flex; align-items: center; gap: 8px; font-size: 0.95rem;">
+                        <input type="checkbox" id="gCheckStart" checked onchange="toggleStartBtnLogic()"> Pakai Tombol 'Start' Manual
+                    </label>
+                    
+                    <div id="jedaContainer" style="display:none; margin-top: 15px; background: #fff3cd; padding: 12px; border-radius: 8px; border: 1px solid #ffe69c;">
+                        <div class="input-group" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                            <label style="color: #856404; font-size: 0.95rem;">⏳ Jeda Antar Soal (detik):</label>
+                            <input type="number" id="gJeda" value="3" onchange="updateGlobalSettings()" class="admin-input" style="width: 80px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">
+                        <h3 style="margin:0; color: #34495e; font-size:1.1rem;">👥 Panel Individu (<span id="playerCountIndiv">0</span>)</h3>
+                        <button onclick="clearAllIndividuals()" class="admin-btn btn-danger" style="padding: 8px 12px; font-size: 0.85rem;">Hapus Semua</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left;">Nama Murid</th>
+                                    <th>Dipakai Murid</th>
+                                    <th>Setelan Admin</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="playerListIndiv"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="indivModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(44, 62, 80, 0.7); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(3px);">
+        <div style="background:white; padding:30px; border-radius:20px; width:90%; max-width:380px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
+            <h3 id="modalTitle" style="margin-top:0; color:#2c3e50; border-bottom:2px solid #eee; padding-bottom:15px; text-align: center;">Set Individu</h3>
+            <div style="display:grid; gap:15px; margin-bottom:25px;">
+                <div class="input-group"><label>Min:</label> <input type="number" id="iMin" class="admin-input"></div>
+                <div class="input-group"><label>Max:</label> <input type="number" id="iMax" class="admin-input"></div>
+                <div class="input-group"><label>Waktu (detik):</label> <input type="number" id="iTime" class="admin-input"></div>
+                <div class="input-group"><label>Maksimal Soal:</label> <input type="number" id="iMaxSoal" class="admin-input"></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button onclick="saveIndividual()" class="admin-btn btn-success" style="width: 100%;">💾 Simpan Aturan</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="clearIndividual()" class="admin-btn btn-danger" style="flex:1;">🗑️ Hapus</button>
+                    <button onclick="closeModal()" class="admin-btn btn-dark" style="flex:1;">✖ Batal</button>
+                </div>
+            </div>
         </div>
     </div>
 

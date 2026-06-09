@@ -195,62 +195,111 @@ input::-webkit-inner-spin-button {
 }
 
 /* =========================================
-   TAMPILAN MODERN PANEL GURU (ADMIN)
+   UI DASBOR ADMIN MODERN & ELEGAN
 ========================================= */
 
-/* Mempercantik Kotak Ruangan */
-#roomSection {
+/* Wadah Pengaturan */
+.settings-card {
     background: #ffffff;
+    padding: 20px;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid #eef2f5;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    text-align: left;
+}
+
+/* Navigasi Tab Ala Apple/Modern */
+.tab-container {
+    display: flex;
+    background: #f1f2f6;
+    padding: 6px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    font-weight: bold;
+    font-size: 1rem;
     border: none;
+    background: transparent;
+    color: #7f8c8d;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* Efek Warna Mewah pada Angka Kode Ruangan */
-#displayRoomCode {
-    background: linear-gradient(135deg, #2c3e50, #3498db);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+.tab-btn.active {
+    background: #ffffff;
+    color: #2c3e50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-/* Desain Tabel Murid yang Lebih Profesional */
-table {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    background: white;
-}
-
-th {
-    background-color: #2c3e50 !important;
-    color: #ffffff;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1.5px;
-    padding: 15px !important;
-}
-
-td {
-    font-weight: 500;
+/* Tombol Admin Estetik */
+.admin-btn {
+    padding: 14px 20px;
     font-size: 1.05rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-/* Responsivitas Ekstra untuk Layar HP yang Sangat Kecil */
-@media (max-width: 400px) {
-    .container {
-        padding: 1rem;
-        border-radius: 15px;
-    }
-    input[type="text"] {
-        font-size: 1.5rem;
-        padding: 10px;
-    }
-    #displayRoomCode {
-        font-size: 2.5rem !important;
-    }
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.btn-primary { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
+.btn-success { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; }
+.btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+.btn-warning { background: linear-gradient(135deg, #f1c40f, #f39c12); color: white; }
+.btn-dark { background: #2c3e50; color: white; }
+
+/* Input Kotak Estetik */
+.admin-input {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    width: 100%;
+    background-color: #fcfcfc;
+}
+
+.admin-input:focus {
+    border-color: #3498db;
+    outline: none;
+    background-color: #ffffff;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group label {
+    font-weight: bold;
+    color: #34495e;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+input[type="checkbox"] {
+    accent-color: #3498db;
+    transform: scale(1.1);
+    cursor: pointer;
 }
 
 /* =========================================
