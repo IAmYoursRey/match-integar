@@ -8,7 +8,7 @@ let totalBenar = 0;
 let totalSalah = 0;
 let totalMain = 0;
 let currentSettings = {};
-let myCurrentOverride = null; // Menyimpan data individu secara live
+let myCurrentOverride = null; 
 let autoNextTimer;
 
 function joinRoom() {
@@ -60,7 +60,7 @@ function listenForStartSignal() {
     database.ref('ruangan/' + currentRoomCode).on('value', (snapshot) => {
         if (!snapshot.exists()) {
             sessionStorage.clear();
-            alert("Ruangan telah ditutup oleh Guru! Anda akan dikembalikan ke halaman utama.");
+            alert("Ruangan telah ditutup! Anda dikembalikan ke halaman utama.");
             window.location.reload();
             return;
         }
@@ -74,23 +74,20 @@ function listenForStartSignal() {
         const globalSet = roomData.global_settings || { pakai_start: true };
         currentSettings = globalSet; 
         const myOverride = myData && myData.override ? myData.override : null;
-        myCurrentOverride = myOverride; // Simpan ke variabel global
+        myCurrentOverride = myOverride; 
 
         const elMin = document.getElementById('minRange');
         const elMax = document.getElementById('maxRange');
         const elTime = document.getElementById('timeSetting');
 
-        // BUKA GEMBOK DEFAULT (Bisa diatur murid jika guru tidak mencentang)
         if(elMin) elMin.disabled = false;
         if(elMax) elMax.disabled = false;
         if(elTime) elTime.disabled = false;
 
-        // TERAPKAN CENTANG GLOBAL (Mengubah angka layar murid dan menguncinya)
         if (globalSet.useMin && elMin) { elMin.value = globalSet.min; elMin.disabled = true; }
         if (globalSet.useMax && elMax) { elMax.value = globalSet.max; elMax.disabled = true; }
         if (globalSet.useTime && elTime) { elTime.value = globalSet.waktu; elTime.disabled = true; }
 
-        // TERAPKAN ATURAN INDIVIDU (Paling kuat, menimpa yang global)
         if (myOverride) {
             if(myOverride.min !== "" && elMin) { elMin.value = myOverride.min; elMin.disabled = true; }
             if(myOverride.max !== "" && elMax) { elMax.value = myOverride.max; elMax.disabled = true; }
@@ -100,7 +97,6 @@ function listenForStartSignal() {
         const mainBtn = document.getElementById('mainBtn');
         
         if (roomData.status_game === "mulai") {
-            // JIKA UJIAN DIMULAI: Gembok semua pengaturan (Mencegah kecurangan)
             if(elMin) elMin.disabled = true;
             if(elMax) elMax.disabled = true;
             if(elTime) elTime.disabled = true;
@@ -153,12 +149,11 @@ function startGame() {
     const input = document.getElementById('answerInput');
     const status = document.getElementById('statusText');
 
-    // CEK MAKSIMAL SOAL (Prioritas: 1. Individu, 2. Wajib karena Start Mati, 3. Global Centang)
     let maxSoalLimit = 999999;
     if (currentSettings.useSoal || !currentSettings.pakai_start) {
         maxSoalLimit = parseInt(currentSettings.max_soal) || 10;
     }
-    // Jika ada pengaturan khusus individu untuk murid ini, timpa batasnya!
+    
     if (myCurrentOverride && myCurrentOverride.max_soal) {
         maxSoalLimit = parseInt(myCurrentOverride.max_soal);
     }
@@ -195,7 +190,7 @@ function startGame() {
     if (currentRoomCode && playerName) {
         database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
             status_jawaban: "Sedang Mengerjakan",
-            jawaban_murid: "",
+            jawaban: "",
             rentang_soal: `${min} s/d ${max}`,
             waktu_set: `${setTime} detik`
         });
@@ -281,7 +276,7 @@ function checkAnswer() {
     if (userAnswer === correctAnswer) {
         totalBenar++; 
         input.classList.add('correct');
-        status.innerText = "Benar! Bagus Sekali.";
+        status.innerText = "Benar!.";
         status.style.color = "#27ae60";
         statusKirim = "Benar";
     } else {
@@ -295,7 +290,7 @@ function checkAnswer() {
     if (currentRoomCode && playerName) {
         database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
             status_jawaban: statusKirim,
-            jawaban_murid: isNaN(userAnswer) ? "-" : userAnswer,
+            jawaban: isNaN(userAnswer) ? "-" : userAnswer,
             total_benar: totalBenar,
             total_salah: totalSalah,
             total_main: totalMain
@@ -350,7 +345,7 @@ function endByTimeout() {
         if (currentRoomCode && playerName) {
             database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
                 status_jawaban: "Waktu Habis",
-                jawaban_murid: "Tidak Menjawab",
+                jawaban: "Tidak Menjawab",
                 total_benar: totalBenar,
                 total_salah: totalSalah,
                 total_main: totalMain

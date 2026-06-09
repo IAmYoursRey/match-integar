@@ -39,11 +39,9 @@ function listenToPlayers() {
                 count++;
                 const playerData = players[name];
                 
-                // Ambil laporan pengaturan aktual dari layar murid
                 const rentangAktif = playerData.rentang_soal || "Belum Mulai";
                 const waktuAktif = playerData.waktu_set || "-";
                 
-                // --- PROSES DATA UNTUK TABEL SKOR (TAB 1) ---
                 let statusText = "Menunggu...";
                 let textStatusColor = "#3498db"; 
                 let bgRowScore = "#ffffff";
@@ -53,7 +51,7 @@ function listenToPlayers() {
                     bgRowScore = "#f0fff4"; 
                     textStatusColor = "#27ae60";
                 } else if (playerData.status_jawaban === "Salah") {
-                    statusText = `Salah (Jawab: ${playerData.jawaban_murid})`;
+                    statusText = `Salah (Jawab: ${playerData.jawaban})`;
                     bgRowScore = "#fff5f5"; 
                     textStatusColor = "#c0392b";
                 } else if (playerData.status_jawaban === "Waktu Habis") {
@@ -84,12 +82,11 @@ function listenToPlayers() {
                 `;
                 listScore.innerHTML += rowScore;
 
-                // --- PROSES DATA UNTUK TABEL INDIVIDU (TAB 2) ---
                 let aturanAdmin = "<span style='color:#95a5a6; font-size:0.85em;'>Tidak ada<br>(Ikut Global)</span>";
                 let bgRowIndiv = "#ffffff";
                 
                 if (playerData.override) {
-                    bgRowIndiv = "#fff3cd"; // Latar kuning jika murid ini punya aturan khusus
+                    bgRowIndiv = "#fff3cd"; 
                     const o = playerData.override;
                     aturanAdmin = `<span style='color:#d35400; font-size:0.85em; font-weight:bold;'>Aktif:</span><br>
                                   <span style='font-size:0.8em; color:#2c3e50; font-weight:bold;'>R: ${o.min||'-'} s/d ${o.max||'-'}<br>W: ${o.waktu||'-'}s | M: ${o.max_soal||'-'}</span>`;
@@ -115,27 +112,25 @@ function listenToPlayers() {
         } else {
             countScore.innerText = "0";
             countIndiv.innerText = "0";
-            listScore.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada murid yang bergabung...</td></tr>`;
-            listIndiv.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada murid yang bergabung...</td></tr>`;
+            listScore.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada yang bergabung...</td></tr>`;
+            listIndiv.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada yang bergabung...</td></tr>`;
         }
     });
 }
 
 function deleteRoom() {
-    if (confirm("Apakah Anda yakin ingin menghapus ruangan ini? Semua murid akan dikeluarkan secara otomatis.")) {
+    if (confirm("Apakah yakin ingin menghapus ruangan ini? Semua akan dikeluarkan secara otomatis.")) {
         database.ref('ruangan/' + currentRoomCode).remove().then(() => {
             sessionStorage.removeItem('adminRoomCode');
             document.getElementById('setupSection').style.display = 'block';
             document.getElementById('roomSection').style.display = 'none';
             currentRoomCode = "";
-            
-            // Bersihkan dua tabel sekaligus (pakai colspan 4 karena sekarang ada 4 kolom)
-            document.getElementById('playerListScore').innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada murid yang bergabung...</td></tr>`;
-            document.getElementById('playerListIndiv').innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada murid yang bergabung...</td></tr>`;
+
+            document.getElementById('playerListScore').innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada yang bergabung...</td></tr>`;
+            document.getElementById('playerListIndiv').innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada yang bergabung...</td></tr>`;
             document.getElementById('playerCountScore').innerText = "0";
             document.getElementById('playerCountIndiv').innerText = "0";
             
-            // Matikan tombol jika ujian sedang jalan
             if (isQuizRunning) toggleQuiz();
         });
     }
@@ -170,15 +165,15 @@ function updateToggleBtnUI() {
     const btn = document.getElementById('toggleQuizBtn');
     if (isQuizRunning) {
         btn.innerHTML = "🛑 Stop";
-        btn.className = "admin-btn btn-warning"; // Berubah warna oranye halus
+        btn.className = "admin-btn btn-warning"; 
     } else {
         btn.innerHTML = "▶ Mulai";
-        btn.className = "admin-btn btn-success"; // Berubah hijau segar
+        btn.className = "admin-btn btn-success"; 
     }
 }
 
 function resetScores() {
-    if (confirm("Yakin ingin mereset semua poin murid menjadi 0? (Nama murid tidak akan dihapus)")) {
+    if (confirm("Yakin ingin mereset semua skor?")) {
         database.ref('ruangan/' + currentRoomCode + '/pemain').once('value', (snapshot) => {
             if (snapshot.exists()) {
                 const updates = {};
@@ -188,7 +183,7 @@ function resetScores() {
                     updates[playerName + '/total_salah'] = 0;
                     updates[playerName + '/total_main'] = 0;
                     updates[playerName + '/status_jawaban'] = "Menunggu...";
-                    updates[playerName + '/jawaban_murid'] = "";
+                    updates[playerName + '/jawaban'] = "";
                 });
                 database.ref('ruangan/' + currentRoomCode + '/pemain').update(updates);
             }
@@ -209,7 +204,6 @@ function switchTab(tabNum) {
     }
 }
 
-// Memaksa Maksimal Soal nyala jika Tombol Start dimatikan
 function toggleStartBtnLogic() {
     const pakaiStart = document.getElementById('gCheckStart').checked;
     const jedaBox = document.getElementById('jedaContainer');
@@ -217,16 +211,15 @@ function toggleStartBtnLogic() {
     
     if (!pakaiStart) {
         jedaBox.style.display = 'block';
-        checkSoal.checked = true; // Paksa centang
-        checkSoal.disabled = true; // Kunci agar guru tidak bisa un-check
+        checkSoal.checked = true; 
+        checkSoal.disabled = true; 
     } else {
         jedaBox.style.display = 'none';
-        checkSoal.disabled = false; // Buka kunci
+        checkSoal.disabled = false; 
     }
     updateGlobalSettings();
 }
 
-// Kirim data ke Firebase (Termasuk Jeda)
 function updateGlobalSettings() {
     database.ref('ruangan/' + currentRoomCode + '/global_settings').set({
         useMin: document.getElementById('gCheckMin').checked,
@@ -235,21 +228,19 @@ function updateGlobalSettings() {
         max: document.getElementById('gMax').value,
         useTime: document.getElementById('gCheckTime').checked,
         waktu: document.getElementById('gTime').value,
-        useSoal: document.getElementById('gCheckSoal').checked || !document.getElementById('gCheckStart').checked, // Wajib true jika start mati
+        useSoal: document.getElementById('gCheckSoal').checked || !document.getElementById('gCheckStart').checked, 
         max_soal: document.getElementById('gMaxSoal').value,
         pakai_start: document.getElementById('gCheckStart').checked,
         jeda: document.getElementById('gJeda').value
     });
 }
 
-// --- LOGIKA MENU POPUP INDIVIDU ---
 let currentEditingPlayer = "";
 
 function setIndividual(nama) {
     currentEditingPlayer = nama;
     document.getElementById('modalTitle').innerText = "Pengaturan: " + nama;
     
-    // Ambil data lama jika ada
     database.ref('ruangan/' + currentRoomCode + '/pemain/' + nama + '/override').once('value', snap => {
         if(snap.exists()) {
             const data = snap.val();
@@ -289,7 +280,7 @@ function clearIndividual() {
 }
 
 function clearAllIndividuals() {
-    if(confirm("Hapus semua kunci pengaturan individu? Semua murid akan kembali mengikuti aturan Global.")) {
+    if(confirm("Hapus semua kunci pengaturan individu? Semua peserta akan kembali mengikuti aturan Global.")) {
         database.ref('ruangan/' + currentRoomCode + '/pemain').once('value', snapshot => {
             snapshot.forEach(child => child.ref.child('override').remove());
         });

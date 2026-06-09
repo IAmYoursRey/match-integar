@@ -194,11 +194,6 @@ input::-webkit-inner-spin-button {
     }
 }
 
-/* =========================================
-   UI DASBOR ADMIN MODERN & ELEGAN
-========================================= */
-
-/* Wadah Pengaturan */
 .settings-card {
     background: #ffffff;
     padding: 20px;
@@ -209,7 +204,6 @@ input::-webkit-inner-spin-button {
     text-align: left;
 }
 
-/* Navigasi Tab Ala Apple/Modern */
 .tab-container {
     display: flex;
     background: #f1f2f6;
@@ -237,7 +231,6 @@ input::-webkit-inner-spin-button {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-/* Tombol Admin Estetik */
 .admin-btn {
     padding: 14px 20px;
     font-size: 1.05rem;
@@ -264,7 +257,6 @@ input::-webkit-inner-spin-button {
 .btn-warning { background: linear-gradient(135deg, #f1c40f, #f39c12); color: white; }
 .btn-dark { background: #2c3e50; color: white; }
 
-/* Input Kotak Estetik */
 .admin-input {
     border: 1px solid #ced4da;
     border-radius: 8px;
@@ -302,17 +294,11 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
-/* =========================================
-   PERBAIKAN DASBOR ADMIN (TIDAK ADA SCROLL)
-========================================= */
-
-/* Membuat kotak admin bisa melebar di laptop */
 .admin-container {
     max-width: 900px !important;
     width: 95%;
 }
 
-/* Desain Tabel Premium */
 .admin-table {
     width: 100%;
     border-collapse: separate;
@@ -330,7 +316,7 @@ input[type="checkbox"] {
     padding: 15px 10px;
     font-size: 0.9rem;
     text-align: center;
-    white-space: nowrap; /* Mencegah judul tabel terpotong */
+    white-space: nowrap; 
 }
 
 .admin-table td {
@@ -341,16 +327,15 @@ input[type="checkbox"] {
     color: #2c3e50;
 }
 
-/* Trik Agar Rapi di Layar HP yang Kecil */
 @media (max-width: 600px) {
     .admin-container {
         padding: 1.5rem 1rem;
     }
     .admin-table th, .admin-table td {
-        padding: 10px 5px; /* Kurangi jarak spasi di HP */
-        font-size: 0.8rem; /* Perkecil huruf agar muat sejajar */
+        padding: 10px 5px;
+        font-size: 0.8rem; 
     }
     #displayRoomCode {
-        font-size: 2.8rem !important; /* Perkecil sedikit angka ruangan di HP */
+        font-size: 2.8rem !important; 
     }
 }
