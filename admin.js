@@ -67,16 +67,34 @@ function listenToPlayers() {
                 const tSalah = playerData.total_salah || 0;
                 const tMain = playerData.total_main || 0;
                 
+                // Tentukan warna latar baris dengan halus
+                let bgRow = "#ffffff";
+                let textStatusColor = "#3498db"; // Biru untuk default/mengerjakan
+
+                if (playerData.status_jawaban === "Benar") {
+                    bgRow = "#f0fff4"; // Hijau sangat tipis
+                    textStatusColor = "#27ae60";
+                } else if (playerData.status_jawaban === "Salah" || playerData.status_jawaban === "Waktu Habis") {
+                    bgRow = "#fff5f5"; // Merah sangat tipis
+                    textStatusColor = "#c0392b";
+                }
+                
+                // Susunan HTML baris tabel yang jauh lebih padat dan rapi
                 const row = `
-                    <tr style="border-bottom: 1px solid #eee; ${rowStyle}">
-                        <td style="padding: 12px; font-weight: bold;">${name}</td>
-                        <td style="padding: 12px; text-align: center; font-size: 0.85rem; color: #7f8c8d;">
-                            Rentang: <b>${rentang}</b> <br> Waktu: <b>${waktu}</b>
+                    <tr style="background-color: ${bgRow}; transition: background 0.3s;">
+                        <td style="font-weight: bold; font-size: 1.05em;">${name}</td>
+                        <td style="text-align: center; font-size: 0.85em; color: #7f8c8d; line-height: 1.4;">
+                            R: <b>${rentang}</b><br>
+                            W: <b>${waktu}</b>
                         </td>
-                        <td style="padding: 12px; text-align: center; font-size: 0.9rem;">
-                            ✅ <b>${tBenar}</b> | ❌ <b>${tSalah}</b> <br> <span style="font-size: 0.8rem; color:#95a5a6;">(Total: ${tMain} Soal)</span>
+                        <td style="text-align: center; line-height: 1.4;">
+                            <span style="color:#27ae60; font-weight:bold;">✔ ${tBenar}</span> | 
+                            <span style="color:#e74c3c; font-weight:bold;">✖ ${tSalah}</span><br>
+                            <span style="font-size: 0.8em; color:#95a5a6; font-weight:bold;">Tot: ${tMain}</span>
                         </td>
-                        <td style="padding: 12px; text-align: center;">${statusText}</td>
+                        <td style="text-align: center; font-weight: bold; color: ${textStatusColor};">
+                            ${statusText}
+                        </td>
                     </tr>
                 `;
                 playerListContainer.innerHTML += row;

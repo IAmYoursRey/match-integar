@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container" style="min-width: 320px; max-width: 500px;">
+    <div class="container admin-container">
         <h2 style="color: #2c3e50; margin-top: 0;">Panel Guru / Admin</h2>
         
         <div id="setupSection">
@@ -23,24 +23,23 @@
 
             <button id="startQuizBtn" class="enter-btn" onclick="startQuiz()" style="background-color: #2ecc71; border-color: #2ecc71; width: 100%; padding: 15px; font-size: 1.2rem; margin-bottom: 25px;">Mulai Ujian Semua Murid</button>
 
-            <h3 style="text-align: left; color: #34495e; margin-bottom: 10px;">Daftar Murid & Hasil (<span id="playerCount">0</span>)</h3>
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem;">
-                    <thead>
-                        <tr style="background-color: #f1f2f6; border-bottom: 2px solid #ddd;">
-                            <th style="padding: 10px;">Nama Murid</th>
-                            <th style="padding: 10px; text-align: center;">Pengaturan</th>
-                            <th style="padding: 10px; text-align: center;">Statistik Skor</th>
-                            <th style="padding: 10px; text-align: center;">Status Terakhir</th>
-                        </tr>
-                    </thead>
-                    <tbody id="playerList">
-                        <tr>
-                            <td colspan="2" style="text-align:center; padding:20px; color:#95a5a6;">Belum ada murid yang bergabung...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <h3 style="text-align: left; color: #34495e; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Daftar Murid & Hasil (<span id="playerCount">0</span>)</h3>
+            
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Nama Murid</th>
+                        <th>Pengaturan</th>
+                        <th>Skor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="playerList">
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding:30px; color:#95a5a6;">Belum ada murid yang bergabung...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
