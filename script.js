@@ -11,6 +11,9 @@ let timer;
 let timeLeft;
 let currentRoomCode = "";
 let playerName = "";
+let totalBenar = 0;
+let totalSalah = 0;
+let totalMain = 0;
 
 // --- FUNGSI GABUNG RUANGAN (LOBBY) ---
 function joinRoom() {
@@ -37,7 +40,11 @@ function joinRoom() {
             }).then(() => {
                 statusText.style.color = "#2ecc71";
                 statusText.innerText = "Berhasil bergabung! Mohon tunggu instruksi Guru untuk mulai...";
+                statusText.innerText = "Berhasil bergabung! Mohon tunggu instruksi Guru untuk mulai...";
                 
+                // SIMPAN SESI LOGIN (Tambahkan 2 baris ini)
+                sessionStorage.setItem('playerName', playerName);
+                sessionStorage.setItem('roomCode', currentRoomCode);
                 // Kunci tombol agar tidak ditekan berulang kali
                 document.querySelector('#lobbyContainer button').disabled = true;
 
@@ -86,11 +93,17 @@ function startGame() {
     mainBtn.style.backgroundColor = "#2ecc71"; 
     mainBtn.style.borderColor = "#2ecc71";    
 
-    // Beri tahu server guru bahwa murid ini sedang aktif berpikir di soal baru
     if (currentRoomCode && playerName) {
+        // Ambil nilai pengaturan di layar murid (pakai proteksi jika kotak dihapus)
+        const curMin = document.getElementById('minRange') ? document.getElementById('minRange').value : "-";
+        const curMax = document.getElementById('maxRange') ? document.getElementById('maxRange').value : "-";
+        const curTime = document.getElementById('timeSetting') ? document.getElementById('timeSetting').value : "-";
+
         database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
             status_jawaban: "Sedang Mengerjakan",
-            jawaban_murid: ""
+            jawaban_murid: "",
+            rentang_soal: `${curMin} s/d ${curMax}`,
+            waktu_set: `${curTime} detik`
         });
     }
 
@@ -128,16 +141,31 @@ function checkAnswer() {
     input.disabled = true;
 
     let statusKirim = "";
+    totalMain++; // Tambah total soal dimainkan
+    
     if (userAnswer === correctAnswer) {
+        totalBenar++; // Tambah poin benar
         input.classList.add('correct');
         status.innerText = "Benar! Bagus Sekali.";
         status.style.color = "#27ae60";
         statusKirim = "Benar";
     } else {
+        totalSalah++; // Tambah poin salah
         input.classList.add('wrong');
         status.innerText = `Salah! Jawaban: ${correctAnswer}`;
         status.style.color = "#c0392b";
         statusKirim = "Salah";
+    }
+
+    // Laporkan jawaban & statistik ke panel guru
+    if (currentRoomCode && playerName) {
+        database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
+            status_jawaban: statusKirim,
+            jawaban_murid: isNaN(userAnswer) ? "-" : userAnswer,
+            total_benar: totalBenar,
+            total_salah: totalSalah,
+            total_main: totalMain
+        });
     }
 
     // Laporkan jawaban ke panel guru secara langsung
@@ -235,3 +263,25 @@ document.addEventListener('fullscreenchange', () => {
         fsBtn.style.backgroundColor = "#2c3e50"; 
     }
 });
+
+// --- AUTO RECONNECT JIKA DI-REFRESH ---
+window.onload = () => {
+    const savedName = sessionStorage.getItem('playerName');
+    const savedRoom = sessionStorage.getItem('roomCode');
+    if (savedName && savedRoom) {
+        playerName = savedName;
+        currentRoomCode = savedRoom;
+        
+        // Langsung tampilkan game dan sembunyikan lobby
+        document.getElementById('lobbyContainer').style.display = 'none';
+        document.getElementById('gameContainer').style.display = 'block';
+        
+        // Beritahu guru bahwa murid terhubung kembali
+        database.ref('ruangan/' + currentRoomCode + '/pemain/' + playerName).update({
+            status_jawaban: "Terkoneksi kembali..."
+        });
+        
+        // Dengarkan status game lagi
+        listenForStartSignal();
+    }
+};

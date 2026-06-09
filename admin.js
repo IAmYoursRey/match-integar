@@ -60,9 +60,22 @@ function listenToPlayers() {
                     rowStyle = "color: #3498db;";
                 }
                 
+                // Tangkap data tambahan dari Firebase (atau beri nilai 0 jika belum ada)
+                const rentang = playerData.rentang_soal || "-";
+                const waktu = playerData.waktu_set || "-";
+                const tBenar = playerData.total_benar || 0;
+                const tSalah = playerData.total_salah || 0;
+                const tMain = playerData.total_main || 0;
+                
                 const row = `
                     <tr style="border-bottom: 1px solid #eee; ${rowStyle}">
-                        <td style="padding: 12px;">${name}</td>
+                        <td style="padding: 12px; font-weight: bold;">${name}</td>
+                        <td style="padding: 12px; text-align: center; font-size: 0.85rem; color: #7f8c8d;">
+                            Rentang: <b>${rentang}</b> <br> Waktu: <b>${waktu}</b>
+                        </td>
+                        <td style="padding: 12px; text-align: center; font-size: 0.9rem;">
+                            ✅ <b>${tBenar}</b> | ❌ <b>${tSalah}</b> <br> <span style="font-size: 0.8rem; color:#95a5a6;">(Total: ${tMain} Soal)</span>
+                        </td>
                         <td style="padding: 12px; text-align: center;">${statusText}</td>
                     </tr>
                 `;
